@@ -1,0 +1,116 @@
+name: 🎮 Contributor Onboarding Nexus
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [ main, master ]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  arcade-cabinet-compiler:
+    name: 🕹️ Testing Contributor Arcade Cabinet Matrix
+    runs-on: ubuntu-latest
+    steps:
+
+    # 1. Transport contributor code tokens to our terminal grid
+    - name: 🚀 Loading Player 2 Cartridge (Checkout)
+      uses: actions/checkout@v4
+
+    # 2. Boot up vanilla system memory core
+    - name: ☕ Initializing OpenJDK Engine (Setup JDK)
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 3. Attempt native compilation of the game files
+    - name: 🛠️ Compiling Source Code Cartridge (javac)
+      id: compile_step
+      run: |
+        if [ ! -f GitRpgEngine.java ]; then
+          echo "::error file=GitRpgEngine.java::🚨 LEVEL FAILURE: GitRpgEngine.java went missing in the transmission stream!"
+          exit 1
+        fi
+        javac GitRpgEngine.java
+        echo "COMPILE_STATUS=SUCCESS" >> $GITHUB_ENV
+
+    # 4. Trigger automated game engine telemetry integration sweeps
+    - name: 🧪 Scanning Game Mechanics for System Balance
+      if: success()
+      run: |
+        echo "⚔️ Running battle matrix simulation calculations..."
+        java GitRpgEngine --action scan --class Warrior --target "PR Validator Robot"
+        echo "✅ Validation successful! Battle parameters are stable and fully loaded."
+
+    # 5. The Fun Game Master Bot Response (Fires on Successful Pull Requests)
+    - name: 👑 Game Master Hype Comment (Success)
+      if: success() && github.event.action == 'opened'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const player = context.payload.pull_request.user.login;
+          const scoreboard = `
+          # 🎮 QUEST COMMITTED: Player 2 Has Joined The Lobby! 
+
+          ```text
+          ==================================================
+           🕹️ ARCADE TELEMETRY: STABLE SYSTEM LINK DETECTED
+          ==================================================
+           • PLAYER PROFILE : @\${player}
+           • CART-BUILD     : GitRpgEngine.java -> SUCCESS
+           • NETWORK LAYER  : Pure Vanilla java.util.*
+          ==================================================
+          ```
+
+          Hey @${player}, your code changes successfully cleared our compiler test grid! 🚀
+
+          ### 🏆 Quest Clear Stats
+          - ⚔️ **Code Smith**: Injected clean compilation tokens with no syntax fragments.
+          - 🧪 **Sandbox Voyager**: Logged a flawless terminal build matrix check.
+          - 📦 **Zero-Bloat Vanguard**: Kept the repository safe from dependency bloat.
+
+          ### 🗺️ Next Mission Step
+          Our arcade maintenance team (the maintainers) has been alerted. They will examine your code algorithms shortly. If everything matches the codebase parameters, your features will be merged directly into the global scoreboard!
+
+          _Insert Token to Continue... Stay awesome!_ 👾
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: scoreboard
+          });
+
+    # 6. Critical Inversion Handler (Fires if the contributor's code contains syntax bugs)
+    - name: 💥 Game Over System Response (Compilation Failure)
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const player = context.payload.pull_request.user.login;
+          const failureNotice = `
+          # 💀 CONTINUE? (INSERT COIN // COMPILER CRASH)
+
+          Hey @${player}, don't panic! Your code modification sequence encountered a syntax error glitch inside the compiler matrix. 
+
+          ### 🛠️ Diagnostics Readout
+          The execution stream broke during the \`javac\` compiler verification checkpoint. 
+
+          ### 🔄 How to Respawn:
+          1. Check the automated logs above to locate the exact broken brace, missing semi-colon, or datatype mismatch.
+          2. Patch the code bugs locally inside your workspace editor.
+          3. Save your file, commit the fixes, and push them right back to this branch branch.
+          
+          The automation pipeline will re-trigger instantly to verify your fixes! **You've got this!** 🕹️⚡
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: failureNotice
+          });
