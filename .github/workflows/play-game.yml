@@ -1,0 +1,67 @@
+name: ⚔️ Play GitRPG Terminal Dungeon
+
+on:
+  workflow_dispatch:
+    inputs:
+      character_name:
+        description: '🛡️ Enter your Hero Avatar Name'
+        required: true
+        default: 'GitKnight'
+      hero_class:
+        description: '🔮 Select your combat discipline node'
+        required: true
+        default: 'Warrior'
+        type: choice
+        options:
+          - 'Warrior'
+          - 'Wizard'
+          - 'Rogue'
+      combat_action:
+        description: '⚔️ Declare your turn execution strategy'
+        required: true
+        default: 'attack'
+        type: choice
+        options:
+          - 'attack'
+          - 'heal'
+          - 'scan'
+      boss_target:
+        description: '👹 Choose the automation glitch to target'
+        required: true
+        default: 'The Merge-Conflict Slime'
+        type: choice
+        options:
+          - 'The Merge-Conflict Slime'
+          - 'The Division-By-Zero Singularity'
+          - 'The Legacy Cobol Dragon'
+
+jobs:
+  execute-turn:
+    name: 🎲 Processing Turn Dynamics
+    runs-on: ubuntu-latest
+    steps:
+
+    # 1. Fetch game core engine rules
+    - name: 🛰️ Syncing Dungeon Blueprints
+      uses: actions/checkout@v4
+
+    # 2. Boot up zero-bloat vanilla environment
+    - name: ☕ Igniting Java Fusion Matrix
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 3. Dynamic compilation phase
+    - name: 🛠️ Compiling Sandbox Logic (javac)
+      run: javac GitRpgEngine.java
+
+    # 4. Fire inputs straight into our modular scanner engine array
+    - name: ⚔️ Launching Turn Action Event
+      run: |
+        echo "👤 PILOT CHARACTER: ${{ github.event.inputs.character_name }}"
+        java GitRpgEngine --action "${{ github.event.inputs.combat_action }}" --class "${{ github.event.inputs.hero_class }}" --target "${{ github.event.inputs.boss_target }}"
+
+    # 5. Dynamic PR comment integration logic if someone plays on a fork branch!
+    - name: 🏆 Turn Concluded
+      run: echo "🎉 Turn processed successfully! Check your runner console logs above to see your damage output panels!"
